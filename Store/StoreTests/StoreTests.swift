@@ -66,4 +66,22 @@ TOTAL: $7.97
 """
         XCTAssertEqual(expectedReceipt, receipt.output())
     }
+    
+    // This test checks the 2-for-1 pricing scheme
+    func testTwoForOnePricing() {
+        let register = Register()
+        let beans = Item(name: "Beans (8oz Can)", priceEach: 199)
+        let beansTwoForOneScheme = TwoForOnePricingScheme(qualifyingItemName: beans.name)
+        register.addDiscountScheme(scheme: beansTwoForOneScheme)
+        
+        register.scan(beans)
+        register.scan(beans)
+        register.scan(beans) 
+        
+        let receipt = register.total()
+        
+        // Assert
+        let expectedSubtotal = 199 * 2  // Expecting 2-for-1 pricing
+        XCTAssertEqual(receipt.total(), expectedSubtotal, "Subtotal should reflect 2-for-1 pricing.")
+    }
 }
